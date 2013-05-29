@@ -7,6 +7,7 @@
 
     newGame: function() {
       this.currentGame = new Models.Game();
+      console.log(this.currentGame.get('config').skyline);
       this.trigger('newGame');
     }
   }, Backbone.Events);

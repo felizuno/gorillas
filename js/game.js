@@ -9,7 +9,6 @@
     },
 
     makeSkyline: function(screenProps, howMany) {
-      console.log('Making skyline!');
       var buildingWidth = screenProps.width / howMany;
 
       var heights = [];
