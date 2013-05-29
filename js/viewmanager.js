@@ -26,7 +26,7 @@
 
       _.each(config.skyline, function(height, index) {
         var yOffset = wh - height;
-        self._drawBuilding(height, buildingWidth, yOffset, xOffset, ctx);
+        self._drawBuilding(height, buildingWidth, yOffset, xOffset, ctx, index);
 
         if (index === 1 || index === 12) {
          self._placeGorillaOnTop(xOffset, yOffset, buildingWidth, ctx);
@@ -36,9 +36,15 @@
       });
     },
 
-    _drawBuilding: function(h, w, yo, xo, ctx) {
+    _drawBuilding: function(h, w, yo, xo, ctx, index) {
       // console.log('Drawing a building', arguments);
-      ctx.fillStyle = 'lightblue';
+      if (index % 3 === 0) {
+        ctx.fillStyle = 'maroon';
+      } else if (index % 5 === 0) {
+        ctx.fillStyle = 'darkgrey';
+      } else {
+        ctx.fillStyle = 'lightblue';
+      }
       ctx.fillRect(xo, yo, w, h);
       // should add windows
       this._addWindowsToBuilding(xo, yo, w, h, ctx);
