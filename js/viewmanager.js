@@ -34,26 +34,43 @@
 
         xOffset += buildingWidth;
       });
-
-      // place Gorillas
     },
 
     _drawBuilding: function(h, w, yo, xo, ctx) {
       // console.log('Drawing a building', arguments);
       ctx.fillStyle = 'lightblue';
       ctx.fillRect(xo, yo, w, h);
+      // should add windows
+      this._addWindowsToBuilding(xo, yo, w, h, ctx);
+    },
+
+    _addWindowsToBuilding: function(xo, yo, w, h, ctx) {
+      var xIncrement = ((w / 5) - 5);
+      var yIncrement = 22; // (h / 8);
+      for (var yPos = (yo + yIncrement); yPos < (yo + h - yIncrement); yPos += yIncrement) {
+        for (var xPos = (xo + xIncrement); xPos < (xo + w - xIncrement); xPos += xIncrement) {
+          ctx.fillStyle = 'yellow';
+          ctx.fillRect(xPos, yPos, 5, 10);
+        }
+      }
+      /*
+        The window should be the maximum that will fit evenly
+        in a row (modulo will be involved)
+
+      */
     },
 
     _placeGorillaOnTop: function(x, y, bw, ctx) {
       x += ((bw - 28) / 2);
       y -= 28;
+      
       var gorilla = new Image();
       gorilla.src = 'img/gorilla-left.png';
       gorilla.onload = function(){
         ctx.drawImage(gorilla, x, y);
       }
-      $('<div>')
-        .css({
+
+      $('<div>').css({
           'position': 'absolute',
           'top': y,
           'left': x,
