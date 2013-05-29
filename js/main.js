@@ -3,13 +3,11 @@
     init: function() {
       this.newGame();
       this.viewManager.init();
-      this.on('change:currentGame', function() {
-        console.log('Game changing');
-      });
     },
 
     newGame: function() {
-      this.currentGame = this.gameFactory.makeNewGame();
+      this.currentGame = new Models.Game();
+      this.trigger('newGame');
     }
   }, Backbone.Events);
 

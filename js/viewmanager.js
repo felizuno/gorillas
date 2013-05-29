@@ -3,33 +3,35 @@
   var GameView = Backbone.View.extend({
     initialize: function() {
       this.model = APP.currentGame;
-      console.log('gameView initialized with this model: ', this.model);
       this.el = $('.game-view').empty()
+      this.listenTo(APP, 'newGame', this.render);
+      
+      var windowProps = this.model.get('config').screenProps;
       $('<canvas>')
-        .prop('width', this.model.get('screenProps').width)
-        .prop('height', this.model.get('screenProps').height)
+        .prop('width', windowProps.width)
+        .prop('height', windowProps.height)
         .appendTo(this.el);
     },
 
     render: function() {
       var self = this;
+      var config = this.model.get('config');
       
-      var width = this.model.get('buildingWidth');
-      var xOffset = this.model.get('screenProps').margin;
-      var wh = this.model.get('screenProps').height;
-      
-      _.each(this.model.get('heights'), function(height) {
+      var ctx = this.el.find('canvas')[0].getContext('2d');
+      var wh = config.screenProps.height;
+      var buildingWidth = config.buildingWidth;
+      var xOffset = 0;
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      _.each(config.skyline, function(height) {
         var yOffset = wh - height;
-        self._drawBuilding(height, width, yOffset, xOffset);
-        xOffset += width;
+        self._drawBuilding(height, buildingWidth, yOffset, xOffset, ctx);
+        xOffset += buildingWidth;
       });
     },
 
-    _drawBuilding: function(h, w, yo, xo) {
-      var ctx = this.el.find('canvas')[0].getContext('2d');
+    _drawBuilding: function(h, w, yo, xo, ctx) {
       console.log('Drawing a building', arguments);
-
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = 'lightblue';
       ctx.fillRect(xo, yo, w, h);
     },
 
@@ -48,7 +50,7 @@
 
       $('.start').click(function() {
         APP.newGame();
-        $('.welcome').hide();
+        // $('.welcome').hide();
       });
 
     },
