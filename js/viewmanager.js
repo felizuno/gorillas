@@ -1,5 +1,7 @@
 (function() {
   ////////////////////////////////////////////////////
+  ////// GAME VIEW (Buildings)
+  ////////////////////////////////////////////////////
   var GameView = Backbone.View.extend({
     initialize: function() {
       this.el = $('.game-view').empty();
@@ -22,18 +24,35 @@
       ctx.canvas.width = ctx.canvas.width;
 
 
-      _.each(config.skyline, function(height) {
+      _.each(config.skyline, function(height, index) {
         var yOffset = wh - height;
         self._drawBuilding(height, buildingWidth, yOffset, xOffset, ctx);
 
+        if (index === 1 || index === 12) {
+         self._placeGorillaOnTop(xOffset, yOffset, buildingWidth, ctx);
+        }
+
         xOffset += buildingWidth;
       });
+
+      // place Gorillas
     },
 
     _drawBuilding: function(h, w, yo, xo, ctx) {
       // console.log('Drawing a building', arguments);
       ctx.fillStyle = 'lightblue';
       ctx.fillRect(xo, yo, w, h);
+    },
+
+    _placeGorillaOnTop: function(x, y, bw, ctx) {
+      x += ((bw - 28) / 2);
+      y -= 28;
+      var gorilla = new Image();
+      gorilla.src = 'img/gorilla-left.png';
+      gorilla.onload = function(){
+        ctx.drawImage(gorilla, x, y);
+      }
+
     }
   });
 
