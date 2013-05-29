@@ -52,11 +52,20 @@
       gorilla.onload = function(){
         ctx.drawImage(gorilla, x, y);
       }
-
+      $('<div>')
+        .css({
+          'position': 'absolute',
+          'top': y,
+          'left': x,
+          'height': '30px',
+          'width': '30px'
+        })
+        .addClass('gorilla')
+        .appendTo('.game-view');
     }
   });
 
-  ////////////////////////////////////////////////////
+
   ////////////////////////////////////////////////////
   ////////////////////////////////////////////////////
   APP.viewManager = _.extend({
