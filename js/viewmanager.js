@@ -12,27 +12,42 @@
         .appendTo(this.el);
     },
 
-    render: function(config) {
+    // render: function(config) {
+    //   var self = this;
+
+    //   var config = APP.currentGame.get('config');
+    //   var xOffset = 0;
+    //   var wh = config.screenProps.height;
+    //   var buildingWidth = config.buildingWidth;
+
+    //   var ctx = this.el.find('canvas')[0].getContext('2d');
+    //   ctx.canvas.width = ctx.canvas.width;
+
+
+    //   _.each(config.skyline, function(height, index) {
+    //     var yOffset = wh - height;
+    //     self._drawBuilding(height, buildingWidth, yOffset, xOffset, ctx, index);
+
+    //     if (index === 1 || index === 12) {
+    //      self._placeGorillaOnTop(xOffset, yOffset, buildingWidth, ctx);
+    //     }
+
+    //     xOffset += buildingWidth;
+    //   });
+    // },
+
+    render: function() {
       var self = this;
-
-      var config = APP.currentGame.get('config');
-      var xOffset = 0;
-      var wh = config.screenProps.height;
-      var buildingWidth = config.buildingWidth;
-
+      var skyline = APP.currentGame.get('config').skyline;
       var ctx = this.el.find('canvas')[0].getContext('2d');
       ctx.canvas.width = ctx.canvas.width;
 
 
-      _.each(config.skyline, function(height, index) {
-        var yOffset = wh - height;
-        self._drawBuilding(height, buildingWidth, yOffset, xOffset, ctx, index);
-
+      _.each(skyline, function(building, index) {
+        self._drawBuilding(building.height, building.width, building.top, building.left, ctx, index);
         if (index === 1 || index === 12) {
-         self._placeGorillaOnTop(xOffset, yOffset, buildingWidth, ctx);
+         self._placeGorillaOnTop(building.left, building.top, building.width, ctx);
         }
-
-        xOffset += buildingWidth;
       });
     },
 
@@ -94,6 +109,8 @@
   APP.viewManager = _.extend({
     init: function() {
       this.gameView = new GameView();
+      // instead of binding this to render, make a setModel function that
+      // will re-set the model to the new game and trigger the render
       this.listenTo(APP, 'newGame', _.bind(this.gameView.render, this.gameView));
 
       $('.start').click(function() {

@@ -10,15 +10,24 @@
 
     makeSkyline: function(screenProps, howMany) {
       var buildingWidth = screenProps.width / howMany;
+      // var heights = [];
+      // for(var i =0; i <= 13; i++) {
+      //   heights.push(Math.floor(Math.random() * 300) + 100);
+      // }
 
-      var heights = [];
-      for(var i =0; i <= 13; i++) {
-        heights.push(Math.floor(Math.random() * 300) + 100);
+      var buildings = [];
+      for(var i =0; i <= howMany; i++) {
+        var height = (Math.floor(Math.random() * 300) + 100);
+        var top = screenProps.height - height;
+        var left = buildingWidth * i;
+
+        var building = new zot.rect(left, top, buildingWidth, height);
+        buildings.push(building);
       }
 
       this.set('config', {
         buildingWidth: buildingWidth,
-        skyline: heights,
+        skyline: buildings,
         screenProps: screenProps
       });
     }
