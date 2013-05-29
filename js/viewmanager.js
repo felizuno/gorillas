@@ -2,27 +2,25 @@
   ////////////////////////////////////////////////////
   var GameView = Backbone.View.extend({
     initialize: function() {
-      this.model = APP.currentGame;
-      this.el = $('.game-view').empty()
-      
-      var windowProps = this.model.get('config').screenProps;
+      this.el = $('.game-view').empty();
+
       $('<canvas>')
-        .prop('width', windowProps.width)
-        .prop('height', windowProps.height)
+        .prop('width', $(window).width())
+        .prop('height', $(window).height())
         .appendTo(this.el);
     },
 
-    render: function() {
-      console.log('view rendering', this);
+    render: function(config) {
       var self = this;
-      var config = this.model.get('config');
 
-      var ctx = this.el.find('canvas')[0].getContext('2d');
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      
+      var config = APP.currentGame.get('config');
       var xOffset = 0;
       var wh = config.screenProps.height;
       var buildingWidth = config.buildingWidth;
+
+      var ctx = this.el.find('canvas')[0].getContext('2d');
+      ctx.canvas.width = ctx.canvas.width;
+
 
       _.each(config.skyline, function(height) {
         var yOffset = wh - height;
