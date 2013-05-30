@@ -5,7 +5,7 @@
     },
 
     newGame: function() {
-      this.currentGame = new Models.Game();
+      this.currentGame = new Models.Game(3);
       console.log(this.currentGame.get('config').skyline);
       this.trigger('newGame');
     }

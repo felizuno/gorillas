@@ -3,9 +3,13 @@
   window.Models = window.Models || {};
 
   Models.Game = Backbone.Model.extend({
-    initialize: function() {
+    initialize: function(howMany) {
+      if (howMany < 3) {
+        return; // Gotta at least have 3
+      }
+
       var screenContext = APP.utils.captureScreenProps();
-      this.makeSkyline(screenContext, 14);
+      this.makeSkyline(screenContext, howMany);
     },
 
     makeSkyline: function(screenProps, howMany) {
@@ -31,7 +35,9 @@
           building.color = 'lightblue';
         }
 
-        if (i === 1 || i === (howMany - 2)) {
+        if (howMany > 3 && (i === 1 || i === (howMany - 2))) {
+          building.gorilla = true;
+        } else if (i === 0 || i === 2) { // howMany = 3 (< 3 not allowed up top)
           building.gorilla = true;
         }
 

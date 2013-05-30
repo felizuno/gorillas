@@ -1,6 +1,6 @@
 (function() {
   ////////////////////////////////////////////////////
-  ////// GAME VIEW (Buildings)
+  ////// GAME VIEW (Foreground)
   ////////////////////////////////////////////////////
   var GameView = Backbone.View.extend({
     initialize: function() {
@@ -70,7 +70,7 @@
       gorilla.src = 'img/gorilla-left.png';
       gorilla.onload = function(){
         self.ctx.drawImage(gorilla, x, y);
-        self.gorillas.push([x, y]);
+        self.gorillas.push(new zot.rect(x, y, 28, 28));
       }
     }
   });
