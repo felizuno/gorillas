@@ -12,12 +12,18 @@
         .appendTo(this.el);
     },
 
+    setModel: function(model) {
+      this.model = APP.currentGame;
+      this.render();
+    },
+
     render: function() {
       this.ctx = this.el.find('canvas')[0].getContext('2d');
       this.ctx.canvas.width = this.ctx.canvas.width;
       
       var skyline = APP.currentGame.get('config').skyline;
       this.renderForeground(skyline);
+      this.renderBackground(skyline);
     },
 
     renderForeground: function(skyline) {
@@ -25,10 +31,7 @@
 
       _.each(skyline, function(building, index) {
         self._drawBuilding(building);
-
-        if (building.gorilla) {
-         self._placeGorillaOnTop(building);
-        }
+        building.gorilla ? self._placeGorillaOnTop(building) : '';
       });
     },
 
@@ -78,7 +81,7 @@
       this.gameView = new GameView();
       // instead of binding this to render, make a setModel function that
       // will re-set the model to the new game and trigger the render
-      this.listenTo(APP, 'newGame', _.bind(this.gameView.render, this.gameView));
+      this.listenTo(APP, 'newGame', _.bind(this.gameView.setModel, this.gameView));
 
       $('.start').click(function() {
         APP.newGame();
