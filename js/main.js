@@ -1,7 +1,6 @@
 (function() {
   window.APP = _.extend({
     init: function() {
-      this.newGame();
       this.viewManager.init();
     },
 

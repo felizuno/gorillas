@@ -21,9 +21,10 @@
       this.ctx = this.el.find('canvas')[0].getContext('2d');
       this.ctx.canvas.width = this.ctx.canvas.width;
       
+      this.gorillas = [];
+
       var skyline = APP.currentGame.get('config').skyline;
       this.renderForeground(skyline);
-      this.renderBackground(skyline);
     },
 
     renderForeground: function(skyline) {
@@ -69,6 +70,7 @@
       gorilla.src = 'img/gorilla-left.png';
       gorilla.onload = function(){
         self.ctx.drawImage(gorilla, x, y);
+        self.gorillas.push([x, y]);
       }
     }
   });
