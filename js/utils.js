@@ -1,9 +1,10 @@
 (function() {
 
   APP.utils = {
-    captureScreenProps: function() {
-      var w = $(window).width();
-      var h = $(window).height();
+    captureCanvasProps: function() {
+      var $canvas = $('canvas');
+      var w = $canvas.width();
+      var h = $canvas.height();
 
       return {
         width: w,

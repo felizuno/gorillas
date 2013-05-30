@@ -4,11 +4,11 @@
   ////////////////////////////////////////////////////
   var GameView = Backbone.View.extend({
     initialize: function() {
-      this.el = $('.game-view').empty();
+      this.el = $('.game-view');
 
       $('<canvas>')
         .prop('width', $(window).width())
-        .prop('height', $(window).height())
+        .prop('height', $(window).height() - 100)
         .appendTo(this.el);
     },
 
@@ -43,22 +43,11 @@
     },
 
     _addWindowsToBuilding: function(building) {
-      var xInc = ((building.width / 5) - 5);
-      var yInc = 22; // (h / 8);
-      var xStop = (building.left + building.width - xInc);
-      var yStop = (building.top + building.height - yInc);
-
-      for (var yPos = (building.top + yInc); yPos < yStop; yPos += yInc) {
-        for (var xPos = (building.left + xInc); xPos < xStop; xPos += xInc) {
-          this.ctx.fillStyle = 'yellow';
-          this.ctx.fillRect(xPos, yPos, 5, 10);
-        }
+      this.ctx.fillStyle = 'yellow';
+      for (var i = 0; i < building.windows.length; i++) {
+          var w = building.windows[i];
+          this.ctx.fillRect(w.left, w.top, w.width, w.height);
       }
-      /*
-        The window should be the maximum that will fit evenly
-        in a row (modulo will be involved)
-
-      */
     },
 
     _placeGorillaOnTop: function(building) {
@@ -67,7 +56,7 @@
       var y = building.top - 28;
       
       var gorilla = new Image();
-      gorilla.src = 'img/gorilla-left.png';
+      gorilla.src = building.gorilla;
       gorilla.onload = function(){
         self.ctx.drawImage(gorilla, x, y);
         self.gorillas.push(new zot.rect(x, y, 28, 28));

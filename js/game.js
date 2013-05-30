@@ -8,7 +8,7 @@
         return; // Gotta at least have 3
       }
 
-      var screenContext = APP.utils.captureScreenProps();
+      var screenContext = APP.utils.captureCanvasProps();
       this.makeSkyline(screenContext, howMany);
     },
 
@@ -35,10 +35,31 @@
           building.color = 'lightblue';
         }
 
-        if (howMany > 3 && (i === 1 || i === (howMany - 2))) {
-          building.gorilla = true;
-        } else if (i === 0 || i === 2) { // howMany = 3 (< 3 not allowed up top)
-          building.gorilla = true;
+          building.windows = [];
+          var xInc = ((buildingWidth / 5) - 5);
+          var yInc = 22; // (h / 8);
+          var xStop = (left + buildingWidth - xInc);
+          var yStop = (top + height - yInc);
+
+          for (var yPos = (top + yInc); yPos < yStop; yPos += yInc) {
+            for (var xPos = (left + xInc); xPos < xStop; xPos += xInc) {
+              w = new zot.rect(xPos, yPos, 5, 10);
+              building.windows.push(w);
+            }
+          }
+
+        if (howMany > 3) {
+          if (i === 1) {
+            building.gorilla = 'img/gorilla-left.png';
+          } else if (i === (howMany - 2)) {
+            building.gorilla = 'img/gorilla-right.png';
+          }
+        } else { // howMany = 3 (< 3 not allowed up top)
+          if (i === 0) {
+            building.gorilla = 'img/gorilla-left.png';
+          } else if (i === 2) {
+            building.gorilla = 'img/gorilla-right.png';
+          }
         }
 
         buildings.push(building);
