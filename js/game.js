@@ -22,6 +22,19 @@
         var left = buildingWidth * i;
 
         var building = new zot.rect(left, top, buildingWidth, height);
+        
+        if (i % 3 === 0) {
+          building.color = 'maroon';
+        } else if (i % 5 === 0) {
+          building.color = 'darkgrey';
+        } else {
+          building.color = 'lightblue';
+        }
+
+        if (i === 1 || i === (howMany - 2)) {
+          building.gorilla = true;
+        }
+
         buildings.push(building);
       }
 

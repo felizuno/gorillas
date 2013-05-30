@@ -12,55 +12,28 @@
         .appendTo(this.el);
     },
 
-    // render: function(config) {
-    //   var self = this;
-
-    //   var config = APP.currentGame.get('config');
-    //   var xOffset = 0;
-    //   var wh = config.screenProps.height;
-    //   var buildingWidth = config.buildingWidth;
-
-    //   var ctx = this.el.find('canvas')[0].getContext('2d');
-    //   ctx.canvas.width = ctx.canvas.width;
-
-
-    //   _.each(config.skyline, function(height, index) {
-    //     var yOffset = wh - height;
-    //     self._drawBuilding(height, buildingWidth, yOffset, xOffset, ctx, index);
-
-    //     if (index === 1 || index === 12) {
-    //      self._placeGorillaOnTop(xOffset, yOffset, buildingWidth, ctx);
-    //     }
-
-    //     xOffset += buildingWidth;
-    //   });
-    // },
-
     render: function() {
-      var self = this;
-      var skyline = APP.currentGame.get('config').skyline;
       this.ctx = this.el.find('canvas')[0].getContext('2d');
       this.ctx.canvas.width = this.ctx.canvas.width;
+      
+      var skyline = APP.currentGame.get('config').skyline;
+      this.renderForeground(skyline);
+    },
 
+    renderForeground: function(skyline) {
+      var self = this;
 
       _.each(skyline, function(building, index) {
-        self._drawBuilding(building, index);
-        if (index === 1 || index === 12) {
-         self._placeGorillaOnTop(building.left, building.top, building.width, this.ctx);
+        self._drawBuilding(building);
+
+        if (building.gorilla) {
+         self._placeGorillaOnTop(building);
         }
       });
     },
 
-    _drawBuilding: function(building, index) {
-      // console.log('Drawing a building', arguments);
-      if (index % 3 === 0) {
-        this.ctx.fillStyle = 'maroon';
-      } else if (index % 5 === 0) {
-        this.ctx.fillStyle = 'darkgrey';
-      } else {
-        this.ctx.fillStyle = 'lightblue';
-      }
-
+    _drawBuilding: function(building) {
+      this.ctx.fillStyle = building.color;
       this.ctx.fillRect(building.left, building.top, building.width, building.height);
       this._addWindowsToBuilding(building);
     },
@@ -84,26 +57,16 @@
       */
     },
 
-    _placeGorillaOnTop: function(x, y, bw) {
+    _placeGorillaOnTop: function(building) {
       var self = this;
-      x += ((bw - 28) / 2);
-      y -= 28;
+      var x = building.left + ((building.width - 28) / 2);
+      var y = building.top - 28;
       
       var gorilla = new Image();
       gorilla.src = 'img/gorilla-left.png';
       gorilla.onload = function(){
         self.ctx.drawImage(gorilla, x, y);
       }
-
-      $('<div>').css({
-          'position': 'absolute',
-          'top': y,
-          'left': x,
-          'height': '30px',
-          'width': '30px'
-        })
-        .addClass('gorilla')
-        .appendTo('.game-view');
     }
   });
 
