@@ -39,39 +39,42 @@
     render: function() {
       var self = this;
       var skyline = APP.currentGame.get('config').skyline;
-      var ctx = this.el.find('canvas')[0].getContext('2d');
-      ctx.canvas.width = ctx.canvas.width;
+      this.ctx = this.el.find('canvas')[0].getContext('2d');
+      this.ctx.canvas.width = this.ctx.canvas.width;
 
 
       _.each(skyline, function(building, index) {
-        self._drawBuilding(building.height, building.width, building.top, building.left, ctx, index);
+        self._drawBuilding(building, index);
         if (index === 1 || index === 12) {
-         self._placeGorillaOnTop(building.left, building.top, building.width, ctx);
+         self._placeGorillaOnTop(building.left, building.top, building.width, this.ctx);
         }
       });
     },
 
-    _drawBuilding: function(h, w, yo, xo, ctx, index) {
+    _drawBuilding: function(building, index) {
       // console.log('Drawing a building', arguments);
       if (index % 3 === 0) {
-        ctx.fillStyle = 'maroon';
+        this.ctx.fillStyle = 'maroon';
       } else if (index % 5 === 0) {
-        ctx.fillStyle = 'darkgrey';
+        this.ctx.fillStyle = 'darkgrey';
       } else {
-        ctx.fillStyle = 'lightblue';
+        this.ctx.fillStyle = 'lightblue';
       }
-      ctx.fillRect(xo, yo, w, h);
-      // should add windows
-      this._addWindowsToBuilding(xo, yo, w, h, ctx);
+
+      this.ctx.fillRect(building.left, building.top, building.width, building.height);
+      this._addWindowsToBuilding(building);
     },
 
-    _addWindowsToBuilding: function(xo, yo, w, h, ctx) {
-      var xIncrement = ((w / 5) - 5);
-      var yIncrement = 22; // (h / 8);
-      for (var yPos = (yo + yIncrement); yPos < (yo + h - yIncrement); yPos += yIncrement) {
-        for (var xPos = (xo + xIncrement); xPos < (xo + w - xIncrement); xPos += xIncrement) {
-          ctx.fillStyle = 'yellow';
-          ctx.fillRect(xPos, yPos, 5, 10);
+    _addWindowsToBuilding: function(building) {
+      var xInc = ((building.width / 5) - 5);
+      var yInc = 22; // (h / 8);
+      var xStop = (building.left + building.width - xInc);
+      var yStop = (building.top + building.height - yInc);
+
+      for (var yPos = (building.top + yInc); yPos < yStop; yPos += yInc) {
+        for (var xPos = (building.left + xInc); xPos < xStop; xPos += xInc) {
+          this.ctx.fillStyle = 'yellow';
+          this.ctx.fillRect(xPos, yPos, 5, 10);
         }
       }
       /*
@@ -81,14 +84,15 @@
       */
     },
 
-    _placeGorillaOnTop: function(x, y, bw, ctx) {
+    _placeGorillaOnTop: function(x, y, bw) {
+      var self = this;
       x += ((bw - 28) / 2);
       y -= 28;
       
       var gorilla = new Image();
       gorilla.src = 'img/gorilla-left.png';
       gorilla.onload = function(){
-        ctx.drawImage(gorilla, x, y);
+        self.ctx.drawImage(gorilla, x, y);
       }
 
       $('<div>').css({
