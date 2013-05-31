@@ -1,9 +1,9 @@
 (function() {
   window.Physics = {
-    g: 9.8,
+    gravity: 9.8,
 
     throwBanana: function(theta, velocity) {
-      var grav = this.g;
+      var g = this.gravity;
 
       return {
         vX: (velocity * Math.cos(theta)),
@@ -11,7 +11,7 @@
 
         positionAt: function (time) {
           return {
-            y: (this.vY * time) - (0.5 * grav * (time * time)),
+            y: (this.vY * time) - (0.5 * g * (time * time)),
             x: (this.vX * time)
           };
         },
