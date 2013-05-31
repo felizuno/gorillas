@@ -10,6 +10,11 @@
         width: w,
         height: h
       };
+    },
+
+    convertToRadian: function(degrees) {
+      var rad = degrees * (Math.PI / 180);
+      return rad;
     }
   };
 
