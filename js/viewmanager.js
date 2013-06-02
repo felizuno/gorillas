@@ -95,7 +95,7 @@
           // ctx.fillStyle = 'white';
           ctx.globalCompositeOperation = 'destination-out';
           ctx.beginPath();
-          ctx.arc(pos.x, pos.y, 50, 0, 2*Math.PI);
+          ctx.arc(pos.x, pos.y, 50, 0, 2 * Math.PI);
           ctx.closePath();
           ctx.fill(); 
           ctx.globalCompositeOperation = 'source-over';
@@ -110,8 +110,10 @@
         }
 
         setTimeout(function() {
-          ctx.clearRect(pos.x, pos.y, 10, 10);
-        }, 50);
+          requestAnimationFrame(function() {
+            ctx.clearRect(pos.x, pos.y, 10, 10);
+          })
+        }, 20);
       };
       
       var ctx = this.ctx || this.el.find('canvas')[0].getContext('2d');
