@@ -89,9 +89,16 @@
       var step = function(timestamp) {
         var progress = timestamp - start;
         var pos = toss.positionAt(progress, true);
-        var imgData = ctx.getImageData(pos.x, pos.y, 10, 10).data;
-        // debugger;
+        var imgData = ctx.getImageData(pos.x, pos.y, 1, 1).data;
+
         if (imgData[0] !== 0  || imgData[1] !== 0 || imgData[2] !== 0) {
+          // ctx.fillStyle = 'white';
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.beginPath();
+          ctx.arc(pos.x, pos.y, 50, 0, 2*Math.PI);
+          ctx.closePath();
+          ctx.fill(); 
+          ctx.globalCompositeOperation = 'source-over';
           return;
         }
 
@@ -104,11 +111,11 @@
 
         setTimeout(function() {
           ctx.clearRect(pos.x, pos.y, 10, 10);
-        }, 100);
+        }, 50);
       };
       
       var ctx = this.ctx || this.el.find('canvas')[0].getContext('2d');
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = 'yellow';
 
       requestAnimationFrame(step);
     },
