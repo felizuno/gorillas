@@ -27,15 +27,20 @@
           _.each(self.gorillas, function(gorilla) {
             // debugger;
             if (click.intersects(gorilla)) {
+              self.tracking = true;
               console.log('Gorilla!!!', gorilla);
               Utils.ironSights.down(e, $canvas);
             }
           });
         })
         .mouseup(function(e) {
-          var aim = Utils.ironSights.up(e, $canvas);
-          var toss = Physics.throwBanana(aim.theta, aim.velocity, aim.origin);
-          self.renderThrow(toss);
+          if (self.tracking) {
+            var aim = Utils.ironSights.up(e, $canvas);
+            var toss = Physics.throwBanana(aim.theta, aim.velocity, aim.origin);
+            self.renderThrow(toss);
+          }
+
+          this.tracking = false;
         });
 
       var requestAnimationFrame = 
@@ -84,12 +89,22 @@
       var step = function(timestamp) {
         var progress = timestamp - start;
         var pos = toss.positionAt(progress, true);
+        var imgData = ctx.getImageData(pos.x, pos.y, 10, 10).data;
+        // debugger;
+        if (imgData[0] !== 0  || imgData[1] !== 0 || imgData[2] !== 0) {
+          return;
+        }
+
         ctx.fillRect(pos.x, pos.y, 10, 10);
         console.log('progress',progress,'x', pos.x, 'y', pos.y);
         // debugger;
         if (progress < hangTime * 1000) { // should cut this off at the edges of the canvas
           requestAnimationFrame(step);
         }
+
+        setTimeout(function() {
+          ctx.clearRect(pos.x, pos.y, 10, 10);
+        }, 100);
       };
       
       var ctx = this.ctx || this.el.find('canvas')[0].getContext('2d');
@@ -105,9 +120,16 @@
     },
 
     _addWindowsToBuilding: function(building) {
-      this.ctx.fillStyle = 'yellow';
+      var dark = Math.round((Math.random() * 15) + 7);
       for (var i = 0; i < building.windows.length; i++) {
           var w = building.windows[i];
+          // debugger;
+          if (Math.pow(i, 2) % dark === 4) {
+            this.ctx.fillStyle = '#333';
+          } else {
+            this.ctx.fillStyle = 'yellow';
+          }
+
           this.ctx.fillRect(w.left, w.top, w.width, w.height);
       }
     },

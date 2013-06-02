@@ -37,9 +37,10 @@
 
         var deltaX = this.x1 - this.x0;
         var deltaY = this.y1 - this.y0;
+        var deltaT = (this.t1 - this.t0) * 0.001;
 
         var theta = Math.atan(deltaY / deltaX);
-        var velocity = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
+        var velocity = (Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) / 5);
 
         return {
           theta: theta,
