@@ -5,7 +5,7 @@
   Models.Game = Backbone.Model.extend({
     initialize: function(howMany) {
       if (howMany < 3) {
-        return; // Gotta at least have 3
+        howMany = 3;
       }
 
       var canvasDims = Utils.captureCanvasProps();
