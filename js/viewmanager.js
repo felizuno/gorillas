@@ -10,31 +10,32 @@
     // },
 
     initialize: function() {
+      var self = this;
       this.el = $('.game-view');
       
       var $canvas = $('<canvas>')
         .prop('width', $(window).width())
         .prop('height', $(window).height() - 100)
         .appendTo(this.el)
-        .click(function(event) {
+        .mousedown(function(e) {
           // these cause reflow!
-          var x = event.clientX - $canvas.offset().left;
-          var y = event.clientY - $canvas.offset().top;
+          var x = e.clientX - $canvas.offset().left;
+          var y = e.clientY - $canvas.offset().top;
           console.log('Click is at: ', x, y);
 
-          var click = new zot.rect((x), (y), 40, 40);
-          var gv = APP.viewManager.gameView;
-          _.each(gv.gorillas, function(gorilla) {
+          var click = new zot.rect(x, y, 40, 40);
+          _.each(self.gorillas, function(gorilla) {
             // debugger;
             if (click.intersects(gorilla)) {
               console.log('Gorilla!!!', gorilla);
-              var theta = Utils.convertToRadian(45);
-              var origin = [click.left, click.top]
-              var toss = Physics.throwBanana(theta, 25, origin);
-              gv.renderThrow(toss);
+              Utils.ironSights.down(e, $canvas);
             }
           });
-
+        })
+        .mouseup(function(e) {
+          var aim = Utils.ironSights.up(e, $canvas);
+          var toss = Physics.throwBanana(aim.theta, aim.velocity, aim.origin);
+          self.renderThrow(toss);
         });
 
       var requestAnimationFrame = 
@@ -82,11 +83,11 @@
 
       var step = function(timestamp) {
         var progress = timestamp - start;
-        var pos = toss.positionAt(progress);
+        var pos = toss.positionAt(progress, true);
         ctx.fillRect(pos.x, pos.y, 10, 10);
         console.log('progress',progress,'x', pos.x, 'y', pos.y);
         // debugger;
-        if (progress < hangTime * 1000) {
+        if (progress < hangTime * 1000) { // should cut this off at the edges of the canvas
           requestAnimationFrame(step);
         }
       };

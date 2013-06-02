@@ -10,10 +10,16 @@
         vY: (velocity * Math.sin(theta)),
         origin: origin,
 
-        positionAt: function (time) {
+        positionAt: function (time, left) {
           time = time / 60;
           console.log('time', time);
-          var x = origin[0] - (this.vX * time);
+          
+          if (left) {
+            var x = origin[0] - (this.vX * time);
+          } else {
+            var x = origin[0] + (this.vX * time);
+          }
+
           var y = (this.vY * time) - (0.5 * g * (time * time)) - origin[1];
           y = Math.abs(y);
 
