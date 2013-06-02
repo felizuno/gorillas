@@ -3,21 +3,59 @@
   ////// GAME VIEW (Foreground)
   ////////////////////////////////////////////////////
   var GameView = Backbone.View.extend({
+    // events: function() {
+    //   return {
+    //     'click canvas': 'reportClick'
+    //   };
+    // },
+
     initialize: function() {
       this.el = $('.game-view');
-
-      $('<canvas>')
+      
+      var $canvas = $('<canvas>')
         .prop('width', $(window).width())
         .prop('height', $(window).height() - 100)
-        .appendTo(this.el);
+        .appendTo(this.el)
+        .click(function(event) {
+          // these cause reflow!
+          var x = event.clientX - $canvas.offset().left;
+          var y = event.clientY - $canvas.offset().top;
+          console.log('Click is at: ', x, y);
+
+          var click = new zot.rect((x), (y), 40, 40);
+          var gv = APP.viewManager.gameView;
+          _.each(gv.gorillas, function(gorilla) {
+            // debugger;
+            if (click.intersects(gorilla)) {
+              console.log('Gorilla!!!', gorilla);
+              var theta = Utils.convertToRadian(45);
+              var origin = [click.left, click.top]
+              var toss = Physics.throwBanana(theta, 25, origin);
+              gv.renderThrow(toss);
+            }
+          });
+
+        });
+
+      var requestAnimationFrame = 
+        window.requestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.msRequestAnimationFrame;
+
+        window.requestAnimationFrame = requestAnimationFrame;
     },
+
+    // reportClick: function(event) {
+
+    // },
 
     setModel: function(model) {
       this.model = APP.currentGame;
-      this.render();
+      this.renderCity();
     },
 
-    render: function() {
+    renderCity: function() {
       this.ctx = this.el.find('canvas')[0].getContext('2d');
       this.ctx.canvas.width = this.ctx.canvas.width;
       
@@ -36,6 +74,29 @@
       });
     },
 
+    renderThrow: function(toss) {
+      var self = this;
+      var start = Date.now();  // Look this up and get seconds
+      var hangTime = toss.hangTime();
+      console.log('throw from', toss.origin, hangTime);
+
+      var step = function(timestamp) {
+        var progress = timestamp - start;
+        var pos = toss.positionAt(progress);
+        ctx.fillRect(pos.x, pos.y, 10, 10);
+        console.log('progress',progress,'x', pos.x, 'y', pos.y);
+        // debugger;
+        if (progress < hangTime * 1000) {
+          requestAnimationFrame(step);
+        }
+      };
+      
+      var ctx = this.ctx || this.el.find('canvas')[0].getContext('2d');
+      ctx.fillStyle = 'green';
+
+      requestAnimationFrame(step);
+    },
+
     _drawBuilding: function(building) {
       this.ctx.fillStyle = building.color;
       this.ctx.fillRect(building.left, building.top, building.width, building.height);
@@ -52,9 +113,10 @@
 
     _placeGorillaOnTop: function(building) {
       var self = this;
-      var x = building.left + ((building.width - 28) / 2);
-      var y = building.top - 28;
+      var x = Math.round(building.left + ((building.width - 28) / 2));
+      var y = Math.round(building.top - 28);
       
+      self.gorillas = [];
       var gorilla = new Image();
       gorilla.src = building.gorilla;
       gorilla.onload = function(){

@@ -1,6 +1,6 @@
 (function() {
 
-  Window.Utils = {
+  window.Utils = {
     captureCanvasProps: function() {
       var $canvas = $('canvas');
       var w = $canvas.width();

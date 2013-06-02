@@ -1,18 +1,25 @@
 (function() {
   window.Physics = {
-    gravity: 9.8,
+    gravity: .98,
 
-    throwBanana: function(theta, velocity) {
+    throwBanana: function(theta, velocity, origin) {
       var g = this.gravity;
 
       return {
         vX: (velocity * Math.cos(theta)),
-        vY: Math.abs((velocity * Math.sin(theta))),
+        vY: (velocity * Math.sin(theta)),
+        origin: origin,
 
         positionAt: function (time) {
+          time = time / 60;
+          console.log('time', time);
+          var x = origin[0] - (this.vX * time);
+          var y = (this.vY * time) - (0.5 * g * (time * time)) - origin[1];
+          y = Math.abs(y);
+
           return {
-            y: (this.vY * time) - (0.5 * g * (time * time)),
-            x: (this.vX * time)
+            x: Math.round(x),
+            y: Math.round(y)
           };
         },
 
