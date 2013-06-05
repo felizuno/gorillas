@@ -19,8 +19,16 @@
 
     ironSights: {
       down: function(e, $canvas, top) {
-        var x = e.clientX - $canvas.offset().left;
-        var y = e.clientY - $canvas.offset().top;
+        if (!this.offsetX) {
+          this.offsetX = $canvas.offset().left;
+        }
+
+        if (!this.offsetY) {
+          this.offsetY = $canvas.offset().top;
+        }
+
+        var x = e.clientX - this.offsetX;
+        var y = e.clientY - this.offsetY;
         // console.log('Down is at: ', x, y);
 
         this.top = top - 10;
@@ -30,8 +38,8 @@
       },
 
       up: function(e, $canvas, left) {
-        var x = e.clientX - $canvas.offset().left;
-        var y = e.clientY - $canvas.offset().top;
+        var x = e.clientX - this.offsetX;
+        var y = e.clientY - this.offsetY;
         // console.log('Up is at: ', x, y);
         this.x1 = x;
         this.y1 = y;
