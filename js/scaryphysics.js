@@ -12,14 +12,13 @@
 
         positionAt: function (time, left) {
           time = time / 60;
-          console.log('time', time);
           
           if (left) {
             var x = origin[0] - (this.vX * time);
           } else {
             var x = origin[0] + (this.vX * time);
           }
-
+          // debugger;
           var y = (this.vY * time) - (0.5 * g * (time * time)) - origin[1];
           y = Math.abs(y);
 
