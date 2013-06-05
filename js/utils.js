@@ -18,24 +18,29 @@
     },
 
     ironSights: {
-      down: function(e, $canvas) {
+      down: function(e, $canvas, top) {
         var x = e.clientX - $canvas.offset().left;
         var y = e.clientY - $canvas.offset().top;
-        console.log('Down is at: ', x, y);
+        // console.log('Down is at: ', x, y);
+
+        this.top = top - 10;
         this.x0 = x;
         this.y0 = y;
         this.t0 = Date.now();
       },
 
-      up: function(e, $canvas) {
+      up: function(e, $canvas, left) {
         var x = e.clientX - $canvas.offset().left;
         var y = e.clientY - $canvas.offset().top;
-        console.log('Up is at: ', x, y);
+        // console.log('Up is at: ', x, y);
         this.x1 = x;
         this.y1 = y;
         this.t1 = Date.now();
-
-        var deltaX = this.x1 - this.x0;
+        if (left) {
+          var deltaX = this.x1 - this.x0;
+        } else {
+          var deltaX = this.x0 - this.x1;
+        }
         var deltaY = this.y1 - this.y0;
         var deltaT = (this.t1 - this.t0) * 0.001;
 
@@ -45,7 +50,7 @@
         return {
           theta: theta,
           velocity: velocity,
-          origin: [this.x0, this.y0]
+          origin: [this.x0, this.top]
         };
       }
     }

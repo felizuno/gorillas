@@ -19,23 +19,29 @@
         .appendTo(this.el)
         .mousedown(function(e) {
           // these cause reflow!
-          var x = e.clientX - $canvas.offset().left;
-          var y = e.clientY - $canvas.offset().top;
+          var x = e.clientX - $canvas.offset().left - 10;
+          var y = e.clientY - $canvas.offset().top - 10;
           console.log('Click is at: ', x, y);
 
-          var click = new zot.rect(x, y, 40, 40);
-          _.each(self.gorillas, function(gorilla) {
+          var click = new zot.rect(x, y, 0, 20);
+          _.each(self.gorillas, function(gorilla, i) {
             // debugger;
             if (click.intersects(gorilla)) {
+              if (i === 0) {
+                self.left = false;
+              } else {
+                self.left = true;
+              }
+
               self.tracking = true;
               console.log('Gorilla!!!', gorilla);
-              Utils.ironSights.down(e, $canvas);
+              Utils.ironSights.down(e, $canvas, gorilla.top);
             }
           });
         })
         .mouseup(function(e) {
           if (self.tracking) {
-            var aim = Utils.ironSights.up(e, $canvas);
+            var aim = Utils.ironSights.up(e, $canvas, self.left);
             var toss = Physics.throwBanana(aim.theta, aim.velocity, aim.origin);
             self.renderThrow(toss);
           }
@@ -84,15 +90,21 @@
       var self = this;
       var start = Date.now();  // Look this up and get seconds
       var hangTime = toss.hangTime();
-      console.log('throw from', toss.origin, hangTime);
+      // console.log('throw from', toss.origin, hangTime);
+
+      _.each(this.gorillas, function(gorilla) {
+        if (gorilla.left - toss.xMax < 50) {
+          $('.welcome').show();
+          // debugger;
+        }
+      });
 
       var step = function(timestamp) {
         var progress = timestamp - start;
-        var pos = toss.positionAt(progress, true);
+        var pos = toss.positionAt(progress, self.left);
         var imgData = ctx.getImageData(pos.x, pos.y, 1, 1).data;
 
         if (imgData[0] !== 0  || imgData[1] !== 0 || imgData[2] !== 0) {
-          // ctx.fillStyle = 'white';
           ctx.globalCompositeOperation = 'destination-out';
           ctx.beginPath();
           ctx.arc(pos.x, pos.y, 50, 0, 2 * Math.PI);
@@ -102,8 +114,12 @@
           return;
         }
 
-        ctx.fillRect(pos.x, pos.y, 10, 10);
-        console.log('progress',progress,'x', pos.x, 'y', pos.y);
+        var width = 10;
+        if (!self.left) {
+          width *= -1;
+        }
+
+        ctx.fillRect(pos.x, pos.y, width, 10);
         // debugger;
         if (progress < hangTime * 1000) { // should cut this off at the edges of the canvas
           requestAnimationFrame(step);
@@ -111,7 +127,7 @@
 
         setTimeout(function() {
           requestAnimationFrame(function() {
-            ctx.clearRect(pos.x, pos.y, 10, 10);
+            ctx.clearRect(pos.x, pos.y, width, 10);
           })
         }, 20);
       };
@@ -170,7 +186,11 @@
 
       $('.start').click(function() {
         APP.newGame();
-        // $('.welcome').hide();
+        $('.welcome').hide();
+      });
+
+      $('.main-menu-button').click(function() {
+        APP.newGame();
       });
 
     },
