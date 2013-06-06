@@ -46,6 +46,7 @@
             self.renderThrow(toss);
           }
 
+          // Comment out for rapid fire!
           self.tracking = false;
         });
 
@@ -91,12 +92,6 @@
       var start = Date.now();  // Look this up and get seconds
       var hangTime = toss.hangTime();
       // console.log('throw from', toss.origin, hangTime);
-
-      _.each(this.gorillas, function(gorilla) {
-        if (gorilla.left - toss.xMax < 50) {
-          $('.welcome').show();
-          // debugger;
-        }
       });
 
       var step = function(timestamp) {
@@ -105,12 +100,21 @@
         var imgData = ctx.getImageData(pos.x, pos.y, 1, 1).data;
 
         if (imgData[0] !== 0  || imgData[1] !== 0 || imgData[2] !== 0) {
+          var circle = new zot.arc(pos, 50);
+          _.each(self.gorillas, function(gorilla, i) {
+            if (circle.overlaps(gorilla)) {
+              console.log('HIT!!!!', i);
+            }
+          });
+          
           ctx.globalCompositeOperation = 'destination-out';
           ctx.beginPath();
           ctx.arc(pos.x, pos.y, 50, 0, 2 * Math.PI);
           ctx.closePath();
           ctx.fill(); 
           ctx.globalCompositeOperation = 'source-over';
+
+
           return;
         }
 
