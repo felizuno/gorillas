@@ -46,7 +46,7 @@
             self.renderThrow(toss);
           }
 
-          this.tracking = false;
+          self.tracking = false;
         });
 
       var requestAnimationFrame = 
